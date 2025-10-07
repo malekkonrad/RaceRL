@@ -5,14 +5,7 @@ Autonomous racing with reinforcement learning.
 
 Projekt polega na wykonaniu symulacji/gry 3d wyścigów samochodowych. W grze będą występowały różne tory wyścigowe. Symulowane będą opory powietrza, drafting, downforce, przyczepność kół. W tym środowisku będą poruszały się samochody sterowane przez Agentów AI. Agent będzie agentem reinforcement learning. Agent będzie wiedział o wektorze prędkości samochodu, wektorze kierunku samochodu, nadchodzącym zakręcie (odległość oraz typ), czy koła się ślizgają oraz siatkę promieni mierzącą odległość do obiektu. Agent będzie miał kontrolę nad sterowaniem kół (od -1 do 1, wartość ciągła), pedałem gazu (wartość ciągła), hamulcem (wartość ciągła). Agenci mają za zadanie wygrać wyścig o długości kilku kółek wokół toru. Agenci mogą się zderzać oraz sobie przeszkadzać, mamy nadzieje zobaczenia typowego zachowania jak drafting czy pchanie siebie (tandem racing).
 
-## Technologie
 
- - Unity
- - idk
-
-## Literatura
-
- - idk
 
 ## Cel projektu:
 
@@ -34,18 +27,18 @@ Stworzenie inteligentnego systemu wyścigowego z wykorzystaniem reinforcement le
 - **Etap 3: Wyścigi kompetytywne** - strategie wyprzedzania, obrona pozycji, świadomość przeciwników
 
 #### Systemy uczące
-
 - Projektowanie przestrzeni obserwacji (raycasty, prędkość, pozycja na torze, pozycje przeciwników)
 - Definiowanie przestrzeni akcji (sterowanie, przyspieszenie, hamowanie)
 - Funkcje nagród dostosowane do każdego etapu uczenia
 - Curriculum learning - stopniowe zwiększanie trudności
 
 #### Wizualizacja i prezentacja
-
 - System kamer do obserwacji wyścigu
 - UI z informacjami o wyścigu (pozycje, czasy okrążeń)
 - Narzędzia do analizy postępów treningu (wykresy, statystyki)
 - Demo finałowe z wyścigiem na żywo
+
+
 
 
 ## Harmonogram:
