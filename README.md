@@ -3,7 +3,13 @@ Autonomous racing with reinforcement learning.
 
 ## Opis projektu
 
-Projekt polega na wykonaniu symulacji/gry 3d wyścigów samochodowych. W grze będą występowały różne tory wyścigowe. Symulowane będą opory powietrza, drafting, downforce, przyczepność kół. W tym środowisku będą poruszały się samochody sterowane przez Agentów AI. Agent będzie agentem reinforcement learning. Agent będzie wiedział o wektorze prędkości samochodu, wektorze kierunku samochodu, nadchodzącym zakręcie (odległość oraz typ), czy koła się ślizgają oraz siatkę promieni mierzącą odległość do obiektu. Agent będzie miał kontrolę nad sterowaniem kół (od -1 do 1, wartość ciągła), pedałem gazu (wartość ciągła), hamulcem (wartość ciągła). Agenci mają za zadanie wygrać wyścig o długości kilku kółek wokół toru. Agenci mogą się zderzać oraz sobie przeszkadzać, mamy nadzieje zobaczenia typowego zachowania jak drafting czy pchanie siebie (tandem racing).
+Projekt zakłada stworzenie trójwymiarowej symulacji wyścigów samochodowych, w której uczestniczą autonomiczni kierowcy sterowani przez algorytmy uczenia ze wzmocnieniem (Reinforcement Learning). Środowisko będzie obejmować różnorodne tory wyścigowe oraz realistyczną fizykę jazdy, uwzględniającą takie zjawiska jak opory powietrza, drafting, downforce czy przyczepność opon.
+
+Każdy pojazd w symulacji będzie kontrolowany przez agenta AI, który na podstawie obserwacji środowiska — takich jak wektor prędkości i kierunku samochodu, informacje o nadchodzących zakrętach (odległość i typ), stopień poślizgu kół oraz dane z zestawu promieni (raycastów) mierzących odległość od przeszkód — podejmie decyzje dotyczące sterowania.
+
+Agent będzie dysponował trzema ciągłymi parametrami sterującymi: skrętem kół (zakres od -1 do 1), pedałem gazu i pedałem hamulca. Celem każdego agenta będzie ukończenie wyścigu w jak najkrótszym czasie, rywalizując z innymi uczestnikami o zwycięstwo.
+
+System ma umożliwiać interakcje między agentami, w tym zderzenia, wyprzedzanie i wykorzystanie efektów aerodynamicznych przeciwników. Zakłada się, że w trakcie treningu agenci nauczą się złożonych strategii wyścigowych, takich jak drafting czy tandem racing, odzwierciedlających realistyczne zachowania kierowców w profesjonalnych wyścigach.
 
 
 
