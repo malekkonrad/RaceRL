@@ -121,3 +121,11 @@ Stworzenie inteligentnego systemu wyścigowego z wykorzystaniem reinforcement le
 - [ ] Finalna dokumentacja projektu (architektura, wyniki eksperymentów)
 - [ ] Analiza wyników (porównanie metod, wykres learning curves)
 - [ ] Wnioski i możliwe rozszerzenia
+
+
+
+
+## Środowisko i zależności
+- Unity 6.0 (6000.0.59f2) [LTS] 
+- ML-Agents Toolkit (wersja zgodna z Unity 6.0) [link](https://github.com/Unity-Technologies/ml-agents)
+- Python 3.10.12 (zgodna z ML-Agents Toolkit)
