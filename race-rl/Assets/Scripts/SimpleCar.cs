@@ -25,7 +25,7 @@ public class SimpleCar : MonoBehaviour
     public SimpleWheel rearRight;
     
     [Header("Engine")]
-    public float motorForce = 5000f;
+    public float motorForce = 500f;
     
     [Header("Steering")]
     public float maxSteerAngle = 30f;
@@ -86,21 +86,33 @@ public class SimpleCar : MonoBehaviour
         // Prosta aerodynamika (opór + downforce) - TODO: do rozbudowy
         float speed = rb.linearVelocity.magnitude;
         float drag = speed * speed * 0.5f;
-        float downforce = speed * speed * 20f;
+        float downforce = speed * speed * 10f;
         
         rb.AddForce(-rb.linearVelocity.normalized * drag);
         rb.AddForce(-transform.up * downforce);
 
         // ApplyAntiRoll(); - pomysł na rozbudowę ale na razie działa, bo wystarczyło dopasować wysokość kół i zawieszenia i nie ma jakiś dziwnych obrotów w wyskich zakrętach
     }
-    
+
     void ApplyMotor(SimpleWheel wheel, float input)
     {
         if (wheel != null && wheel.IsGrounded())
         {
-            Vector3 force = transform.forward * motorForce * input;
-            rb.AddForceAtPosition(force, wheel.transform.position);
+            float carSpeed = Vector3.Dot(transform.forward, rb.linearVelocity);
+
+            float normalizedSpeed = Mathf.Clamp01(Mathf.Abs(carSpeed) / 1000f); // Zakładamy, że 100 m/s to maksymalna prędkość dla pełnej mocy
+
+            float availableTorque = powerCurve(normalizedSpeed) * input* motorForce;
+
+            // Vector3 force = transform.forward * motorForce * input;
+            rb.AddForceAtPosition(transform.forward * availableTorque, wheel.transform.position);
         }
+    }
+    
+    float powerCurve(float t)
+    {
+        // Prosty wykres mocy: pełna moc przy 0 prędkości, spada do 0 przy maksymalnej prędkości
+        return Mathf.Clamp01(1f - t);
     }
 
     void ApplyBrake(SimpleWheel wheel, float input)
