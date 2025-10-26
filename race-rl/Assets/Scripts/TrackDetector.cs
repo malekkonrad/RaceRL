@@ -2,18 +2,34 @@ using UnityEngine;
 
 public class TrackDetector : MonoBehaviour
 {
-    public LayerMask roadLayer; // ustaw warstwę „Road” w Unity dla toru
+    public Transform[] wheels;
+    public LayerMask roadLayer;
+
+    public int WheelsOnRoad()
+    {
+        int wheelsOnRoad = 0;
+
+        foreach (var wheel in wheels)
+        {
+            if (Physics.Raycast(wheel.position, Vector3.down, 1f, roadLayer))
+            {
+                wheelsOnRoad++;
+            }
+        }
+
+        return wheelsOnRoad;
+    }
 
     void Update()
     {
-        bool isOnTrack = Physics.Raycast(transform.position, Vector3.down, 3f, roadLayer);
-        Debug.Log(isOnTrack ? "✅ On track" : "❌ OFF track!");
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 3f);
+        if (WheelsOnRoad() == 0)
+        {
+            Debug.Log("Wszystkie koła poza torem!");
+        }
+        else
+        {
+            Debug.Log("Koła na torze: " + WheelsOnRoad());
+        }
     }
 }
 
