@@ -86,7 +86,7 @@ public class SimpleCar : MonoBehaviour
         // Prosta aerodynamika (opór + downforce) - TODO: do rozbudowy
         float speed = rb.linearVelocity.magnitude;
         float drag = speed * speed * 0.5f;
-        float downforce = speed * speed * 10f;
+        float downforce = speed * speed * 2f;
         
         rb.AddForce(-rb.linearVelocity.normalized * drag);
         rb.AddForce(-transform.up * downforce);

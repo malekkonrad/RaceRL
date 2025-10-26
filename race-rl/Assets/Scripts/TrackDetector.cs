@@ -24,11 +24,13 @@ public class TrackDetector : MonoBehaviour
     {
         if (WheelsOnRoad() == 0)
         {
-            Debug.Log("Wszystkie koła poza torem!");
+            // Debug.Log("brak");
+            bool allWheelsOffRoad = true;
         }
         else
         {
-            Debug.Log("Koła na torze: " + WheelsOnRoad());
+            // Debug.Log("Koła na torze: " + WheelsOnRoad());
+            bool allWheelsOffRoad = false;
         }
     }
 }
