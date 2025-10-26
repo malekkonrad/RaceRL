@@ -311,7 +311,7 @@ public class Car : MonoBehaviour
     public float suspensionForce = 90f;
     public float dampAmount = 2.5f;
     public float suspensionForceClamp = 200f;
-    [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public Rigidbody rb;              // car rb - wsm ta sama podstawa!
     [HideInInspector] public bool forwards = true;
 
     // Assists
