@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Road
+  - Wall
+  - Checkpoints
   layers:
   - Default
   - TransparentFX
@@ -13,8 +15,8 @@ TagManager:
   - Water
   - UI
   - Road
-  - 
-  - 
+  - Checkpoints
+  - Walls
   - 
   - 
   - 

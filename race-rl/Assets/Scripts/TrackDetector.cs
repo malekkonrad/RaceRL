@@ -22,16 +22,16 @@ public class TrackDetector : MonoBehaviour
 
     void Update()
     {
-        if (WheelsOnRoad() == 0)
-        {
-            // Debug.Log("brak");
-            bool allWheelsOffRoad = true;
-        }
-        else
-        {
-            // Debug.Log("Koła na torze: " + WheelsOnRoad());
-            bool allWheelsOffRoad = false;
-        }
+        // if (WheelsOnRoad() == 0)
+        // {
+        //     Debug.Log("brak");
+        //     // bool allWheelsOffRoad = true;
+        // }
+        // else
+        // {
+        //     Debug.Log("Koła na torze: " + WheelsOnRoad());
+        //     // bool allWheelsOffRoad = false;
+        // }
     }
 }
 

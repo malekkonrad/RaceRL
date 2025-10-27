@@ -165,7 +165,7 @@ public class SimpleCar : MonoBehaviour
         }
         return 2f;
     }
-    
+
 
 
     // pomoc do wizualizacji informacji o położeniu kół - obecnie nie potrzebne ale przy rozbudownie fizyki może się przydać 
@@ -174,14 +174,14 @@ public class SimpleCar : MonoBehaviour
         GUIStyle style = new GUIStyle();
         style.fontSize = 20;
         style.normal.textColor = Color.white;
-        
+
         GUI.Label(new Rect(10, 10, 300, 30), $"Speed: {rb.linearVelocity.magnitude * 3.6f:F0} km/h", style);
         GUI.Label(new Rect(10, 35, 300, 30), $"Throttle: W/S  Steer: A/D", style);
-        
+
         int y = 70;
         SimpleWheel[] wheels = { frontLeft, frontRight, rearLeft, rearRight };
         string[] names = { "FL", "FR", "RL", "RR" };
-        
+
         for (int i = 0; i < wheels.Length; i++)
         {
             if (wheels[i] != null)
@@ -192,6 +192,60 @@ public class SimpleCar : MonoBehaviour
             }
         }
     }
+    
+
+
+    public void SetInputs(float forwardAmount, float turnAmount)
+    {
+        // Zastąp input z klawiatury inputem z ML-Agents
+        float throttle = forwardAmount;
+        float steer = turnAmount;
+        
+        // Skręcanie
+        float targetSteer = steer * maxSteerAngle;
+        currentSteerAngle = Mathf.Lerp(currentSteerAngle, targetSteer, Time.fixedDeltaTime * steerSpeed);
+        
+        // Obróć przednie koła
+        if (frontLeft != null)
+            frontLeft.transform.localRotation = Quaternion.Euler(0, currentSteerAngle, 0);
+        if (frontRight != null)
+            frontRight.transform.localRotation = Quaternion.Euler(0, currentSteerAngle, 0);
+
+        // Silnik
+        if (throttle > 0.1f)
+        {
+            ApplyMotor(rearLeft, throttle);
+            ApplyMotor(rearRight, throttle);
+        }
+        
+        // Hamulce
+        if (throttle < -0.1f)
+        {
+            ApplyBrake(frontLeft, Mathf.Abs(throttle));
+            ApplyBrake(frontRight, Mathf.Abs(throttle));
+            ApplyBrake(rearLeft, Mathf.Abs(throttle));
+            ApplyBrake(rearRight, Mathf.Abs(throttle));
+        }
+    }
+
+    public void StopCompletely()
+    {
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+        currentSteerAngle = 0f;
+        
+        // Zresetuj kąty kół
+        if (frontLeft != null)
+            frontLeft.transform.localRotation = Quaternion.identity;
+        if (frontRight != null)
+            frontRight.transform.localRotation = Quaternion.identity;
+    }
+
+
+
 }
 
 
