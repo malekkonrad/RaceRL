@@ -65,31 +65,31 @@ public class SimpleCar : MonoBehaviour
     
     void FixedUpdate()
     {
-        float throttle = Input.GetAxis("Vertical");
+        // float throttle = Input.GetAxis("Vertical");
         
-        // Silnik - tylko tylne koła - bo w F1 tak jest - nie wiedziałem
-        if (throttle > 0.1f)
-        {
-            ApplyMotor(rearLeft, throttle);
-            ApplyMotor(rearRight, throttle);
-        }
+        // // Silnik - tylko tylne koła - bo w F1 tak jest - nie wiedziałem
+        // if (throttle > 0.1f)
+        // {
+        //     ApplyMotor(rearLeft, throttle);
+        //     ApplyMotor(rearRight, throttle);
+        // }
         
-        // Hamulce - tu już na wszystkie koła
-        if (throttle < -0.1f)
-        {
-            ApplyBrake(frontLeft, Mathf.Abs(throttle));
-            ApplyBrake(frontRight, Mathf.Abs(throttle));
-            ApplyBrake(rearLeft, Mathf.Abs(throttle));
-            ApplyBrake(rearRight, Mathf.Abs(throttle));
-        }
+        // // Hamulce - tu już na wszystkie koła
+        // if (throttle < -0.1f)
+        // {
+        //     ApplyBrake(frontLeft, Mathf.Abs(throttle));
+        //     ApplyBrake(frontRight, Mathf.Abs(throttle));
+        //     ApplyBrake(rearLeft, Mathf.Abs(throttle));
+        //     ApplyBrake(rearRight, Mathf.Abs(throttle));
+        // }
         
-        // Prosta aerodynamika (opór + downforce) - TODO: do rozbudowy
-        float speed = rb.linearVelocity.magnitude;
-        float drag = speed * speed * 0.5f;
-        float downforce = speed * speed * 2f;
+        // // Prosta aerodynamika (opór + downforce) - TODO: do rozbudowy
+        // float speed = rb.linearVelocity.magnitude;
+        // float drag = speed * speed * 0.5f;
+        // float downforce = speed * speed * 2f;
         
-        rb.AddForce(-rb.linearVelocity.normalized * drag);
-        rb.AddForce(-transform.up * downforce);
+        // rb.AddForce(-rb.linearVelocity.normalized * drag);
+        // rb.AddForce(-transform.up * downforce);
 
         // ApplyAntiRoll(); - pomysł na rozbudowę ale na razie działa, bo wystarczyło dopasować wysokość kół i zawieszenia i nie ma jakiś dziwnych obrotów w wyskich zakrętach
     }

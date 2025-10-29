@@ -10,6 +10,10 @@ public class RacistAgent : Agent
     [SerializeField] private TrackCheckpoints trackCheckpoints;
     [SerializeField] private Transform spawnPosition;
 
+    [SerializeField] private float flippedEndDelay = 0.75f;        // ile sekund warunek ma trwać
+    [SerializeField, Range(-1f, 1f)] private float upsideDownDotThreshold = -0.2f; // < 0 znaczy "głową w dół"
+    private float flippedTimer = 0f;
+
     private SimpleCar carDriver;
 
 
@@ -44,10 +48,12 @@ public class RacistAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        transform.position = spawnPosition.position + new Vector3(Random.Range(-5f, +5f), 0, Random.Range(-5f, +5f));
+        transform.position = spawnPosition.position + new Vector3(0, 0, Random.Range(-5f, +5f));
         transform.forward = spawnPosition.forward;
         trackCheckpoints.ResetCheckpoint(transform);
         carDriver.StopCompletely();
+
+        flippedTimer = 0f;
     }
 
 
@@ -112,6 +118,40 @@ public class RacistAgent : Agent
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
             AddReward(-0.1f);
+        }
+    }
+
+
+    private void FixedUpdate()
+    {
+        if (carDriver != null)
+        {
+            SimpleWheel[] wheels = { carDriver.frontLeft, carDriver.frontRight, carDriver.rearLeft, carDriver.rearRight };
+            int counter = 0;
+            foreach (var wheel in wheels)
+            {
+                if (!wheel.IsGrounded())
+                {
+                    counter++;
+                }
+            }
+
+            float upDot = Vector3.Dot(transform.up, Vector3.up); // 1 = prosto, -1 = do góry nogami
+            bool upsideDown = upDot < upsideDownDotThreshold;
+
+            if (counter == 4 && upsideDown)
+            {
+                flippedTimer += Time.fixedDeltaTime;
+                if (flippedTimer >= flippedEndDelay)
+                {
+                    AddReward(-1f);
+                    EndEpisode();
+                }
+            }
+            else
+            {
+                flippedTimer = 0f;
+            }
         }
     }
 

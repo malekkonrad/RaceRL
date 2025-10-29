@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class TrackDetector : MonoBehaviour
 {
+
+    /// <summary>
+    /// gdzeiś dać ta metode czy w powietrzu
+    /// </summary>
+
     public Transform[] wheels;
     public LayerMask roadLayer;
 

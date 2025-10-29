@@ -17,6 +17,11 @@ public class SimpleWheel : MonoBehaviour
     public float springStrength = 1f;
     public float springDamper = .2f;
 
+    [Header("Ground Filter")]
+    public LayerMask groundLayers;
+
+
+
     [Header("Debug")]
     public bool showDebug = true;
 
@@ -33,7 +38,7 @@ public class SimpleWheel : MonoBehaviour
     void FixedUpdate()
     {
         // Raycast - sprawdza czy dotyka koło ziemi - wszyscy tak robią
-        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, suspensionDistance + radius))
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, suspensionDistance + radius, groundLayers, QueryTriggerInteraction.Ignore))
         {
             isGrounded = true;
 
