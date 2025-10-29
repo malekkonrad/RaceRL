@@ -25,6 +25,8 @@ public class TrackDetector : MonoBehaviour
         return wheelsOnRoad;
     }
 
+    // obecnie nie używane bo są ściany (niewidoczne), ale tego też jest ciekawy
+    // można zrobić porównanie
     void Update()
     {
         // if (WheelsOnRoad() == 0)

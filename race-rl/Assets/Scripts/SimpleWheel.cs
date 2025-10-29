@@ -8,7 +8,6 @@ using UnityEngine;
 /// </summary>
 
 
-
 public class SimpleWheel : MonoBehaviour
 {
     [Header("Wheel Settings")]
@@ -37,6 +36,7 @@ public class SimpleWheel : MonoBehaviour
 
     void FixedUpdate()
     {
+        /// NEW zmiana - sprawdzamy tylko odległość od konkretnych warstw - trzeba o tym pamiętać!!!!!!!!!
         // Raycast - sprawdza czy dotyka koło ziemi - wszyscy tak robią
         if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, suspensionDistance + radius, groundLayers, QueryTriggerInteraction.Ignore))
         {

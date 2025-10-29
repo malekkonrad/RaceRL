@@ -10,7 +10,9 @@ public class RacistAgent : Agent
     [SerializeField] private TrackCheckpoints trackCheckpoints;
     [SerializeField] private Transform spawnPosition;
 
-    [SerializeField] private float flippedEndDelay = 0.75f;        // ile sekund warunek ma trwać
+    // dodatkowe pola żeby zapobiegać przewracaniu się - w teorii teraz już nie powinno być z tym problemu ale myślę 
+    // że jak się dołoży kilku agentów i zderzenia to może być różnie
+    [SerializeField] private float flippedEndDelay = 0.75f;        // ile sekund warunek ma trwać 
     [SerializeField, Range(-1f, 1f)] private float upsideDownDotThreshold = -0.2f; // < 0 znaczy "głową w dół"
     private float flippedTimer = 0f;
 
@@ -66,42 +68,20 @@ public class RacistAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        float forwardAmount = 0f;
-        float turnAmount = 0f;
+        // Continuous actions: [0] = throttle (-1..1), [1] = steer (-1..1)
+        float forwardAmount = Mathf.Clamp(actions.ContinuousActions[0], -1f, 1f);
+        float turnAmount = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
 
-        switch (actions.DiscreteActions[0])
-        {
-            case 0: forwardAmount = 0f; break;
-            case 1: forwardAmount = 1f; break;
-            case 2: forwardAmount = -1f; break;
-        }
-
-        switch (actions.DiscreteActions[1])
-        {
-            case 0: turnAmount = 0f; break;
-            case 1: turnAmount = 1f; break;
-            case 2: turnAmount = -1f; break;
-        }
-
-        Debug.Log($"ML Action: Forward={forwardAmount}, Turn={turnAmount}");
+        // Debug.Log($"ML Action: Forward={forwardAmount}, Turn={turnAmount}"); // wyłącz w treningu
 
         carDriver.SetInputs(forwardAmount, turnAmount);
     }
 
-
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        int forwardAction = 0;
-        if (Input.GetKey(KeyCode.W)) forwardAction = 1;
-        if (Input.GetKey(KeyCode.S)) forwardAction = 2;
-
-        int turnAction = 0;
-        if (Input.GetKey(KeyCode.A)) turnAction = 1;
-        if (Input.GetKey(KeyCode.D)) turnAction = 2;
-
-        ActionSegment<int> discreteActions = actionsOut.DiscreteActions;
-        discreteActions[0] = forwardAction;
-        discreteActions[1] = turnAction;
+        var continuous = actionsOut.ContinuousActions;
+        continuous[0] = Input.GetAxis("Vertical");   // throttle: W/S
+        continuous[1] = Input.GetAxis("Horizontal"); // steer: A/D
     }
 
 
