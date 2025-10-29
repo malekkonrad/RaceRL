@@ -56,27 +56,27 @@ Stworzenie inteligentnego systemu wyścigowego z wykorzystaniem reinforcement le
 ## Harmonogram
 
 ###  Tydzień 1 (13-17.10): Inicjalizacja projektu
-- [ ] Instalacja i konfiguracja środowiska Unity oraz ML-Agents Toolkit
-- [ ] Zapoznanie się z środowiskiem Unity oraz przegląd dokumentacji ML-Agents
-- [ ] Stworzenie podstawowego projektu Unity z prostym torem
+- [X] Instalacja i konfiguracja środowiska Unity oraz ML-Agents Toolkit
+- [X] Zapoznanie się z środowiskiem Unity oraz przegląd dokumentacji ML-Agents
+- [X] Stworzenie podstawowego projektu Unity z prostym torem
 
 ### Tydzień 2 (20-24.10): Podstawowe środowisko treningowe
-- [ ] Modelowanie prostego toru wyścigowego (prosta + kilka zakrętów)
-- [ ] Implementacja systemu checkpointów
-- [ ] Podstawowa kamera i oświetlenie
-- [ ] Import lub stworzenie prostego modelu pojazdu 3D
+- [X] Modelowanie prostego toru wyścigowego (prosta + kilka zakrętów)
+- [X] Implementacja systemu checkpointów
+- [X] Podstawowa kamera i oświetlenie
+- [X] Import lub stworzenie prostego modelu pojazdu 3D
 
 ### Tydzień 3 (27-31.10): Fizyka pojazdu
-- [ ] Konfiguracja Rigidbody i colliderów
-- [ ] Implementacja systemu sterowania (WheelColliders)
-- [ ] Podstawowa fizyka: przyspieszanie, hamowanie, skręcanie
-- [ ] Testowanie manualnego sterowania (klawiatura)
+- [X] Konfiguracja Rigidbody i colliderów
+- [X] Implementacja systemu sterowania (odejście od pomysłu z Wheel Collider na rzecz własnej fizyki)
+- [X] Podstawowa fizyka: przyspieszanie, hamowanie, skręcanie (WŁASNA IMPLEMENTACJA - w fazie początkowej)
+- [X] Testowanie manualnego sterowania (klawiatura)
 
 ### Tydzień 4 (3-7.11): Integracja ML-Agents
-- [ ] Integracja ML-Agents Toolkit z projektem
-- [ ] Konfiguracja agentów i środowiska
-- [ ] Implementacja podstawowych funkcji nagród
-- [ ] Testowanie i debugowanie agentów
+- [X] Integracja ML-Agents Toolkit z projektem
+- [X] Konfiguracja agentów i środowiska
+- [X] Implementacja podstawowych funkcji nagród i kar
+- [X] Testowanie i debugowanie agentów
 
 ### Tydzień 5 (10-14.11): Pierwszy trening - podstawowa jazda
 - [ ] Uruchomienie pierwszego treningu (algorytm PPO)
