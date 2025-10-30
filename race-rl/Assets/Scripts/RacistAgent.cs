@@ -72,8 +72,6 @@ public class RacistAgent : Agent
         float forwardAmount = Mathf.Clamp(actions.ContinuousActions[0], -1f, 1f);
         float turnAmount = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
 
-        // Debug.Log($"ML Action: Forward={forwardAmount}, Turn={turnAmount}"); // wyłącz w treningu
-
         carDriver.SetInputs(forwardAmount, turnAmount);
     }
 
@@ -90,6 +88,8 @@ public class RacistAgent : Agent
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
             AddReward(-0.5f);
+            // na razie kończymy epizod jak zderzy się z ścianą
+            EndEpisode();
         }
     }
 
@@ -98,6 +98,7 @@ public class RacistAgent : Agent
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
             AddReward(-0.1f);
+            EndEpisode();
         }
     }
 
