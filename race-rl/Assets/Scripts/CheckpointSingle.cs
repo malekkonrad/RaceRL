@@ -6,9 +6,16 @@ public class CheckpointSingle : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        // if (other.CompareTag("Player"))
+        // {
+        //     trackCheckpoints.AgentThroughCheckpoint(this, other.transform);
+        // }
+
+        // Szukamy agenta po rodzicach, bo collider zwykle jest na mesh/modelu
+        var agent = other.GetComponentInParent<RacistAgent>();
+        if (agent != null)
         {
-            trackCheckpoints.AgentThroughCheckpoint(this, other.transform);
+            trackCheckpoints.AgentThroughCheckpoint(this, agent.transform);
         }
     }
 

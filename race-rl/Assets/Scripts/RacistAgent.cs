@@ -4,6 +4,7 @@ using Unity.MLAgents.Actuators;
 using Unity.VisualScripting;
 using Unity.MLAgents.Sensors;
 
+[RequireComponent(typeof(DecisionRequester))]
 public class RacistAgent : Agent
 {
 
@@ -19,17 +20,28 @@ public class RacistAgent : Agent
     private SimpleCar carDriver;
 
 
+    public void Init(TrackCheckpoints checkpoints, Transform spawn)
+    {
+        trackCheckpoints = checkpoints;
+        spawnPosition = spawn;
+
+        // auto register
+        trackCheckpoints?.RegisterCar(transform);
+    }
+
+
+
     private void Awake()
     {
         carDriver = GetComponent<SimpleCar>();
     }
 
 
-    private void Start()
-    {
-        trackCheckpoints.OnCarCorrectCheckpoint += TrackCheckpoints_OnCarCorrectCheckpoint;
-        trackCheckpoints.OnCarWrongCheckpoint += TrackCheckpoints_OnWrongCorrectCheckpoint;
-    }
+    // private void Start()
+    // {
+    //     trackCheckpoints.OnCarCorrectCheckpoint += TrackCheckpoints_OnCarCorrectCheckpoint;
+    //     trackCheckpoints.OnCarWrongCheckpoint += TrackCheckpoints_OnWrongCorrectCheckpoint;
+    // }
 
     private void TrackCheckpoints_OnCarCorrectCheckpoint(object sender, TrackCheckpoints.CarCheckpointEventArgs e)
     {
@@ -61,8 +73,13 @@ public class RacistAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        Vector3 checkpointForward = trackCheckpoints.GetNexCheckpoint(transform).transform.forward;
-        float directionDot = Vector3.Dot(transform.forward, checkpointForward);
+        var next = trackCheckpoints?.GetNexCheckpoint(transform);
+        float directionDot = 0f;
+        if (next != null)
+        {
+            Vector3 checkpointForward = next.transform.forward;
+            directionDot = Vector3.Dot(transform.forward, checkpointForward);
+        }
         sensor.AddObservation(directionDot);
     }
 
@@ -136,5 +153,82 @@ public class RacistAgent : Agent
         }
     }
 
+
+    protected override void OnEnable()
+    {
+        base.OnEnable(); // KLUCZOWE: inicjalizuje ML-Agents (sensors, policy itd.)
+
+            // Ustaw warstwę "Agent" na całym prefabie i wyłącz kolizje Agent↔Agent
+        EnsureAgentLayerAndIgnoreSelf();
+        
+
+
+        if (trackCheckpoints == null)
+            trackCheckpoints = FindFirstObjectByType<TrackCheckpoints>();
+
+        trackCheckpoints?.RegisterCar(transform);
+
+        if (trackCheckpoints != null)
+        {
+            trackCheckpoints.OnCarCorrectCheckpoint += TrackCheckpoints_OnCarCorrectCheckpoint;
+            trackCheckpoints.OnCarWrongCheckpoint += TrackCheckpoints_OnWrongCorrectCheckpoint;
+        }
+
+        var dr = GetComponent<DecisionRequester>();
+        if (dr != null)
+        {
+            if (dr.DecisionPeriod <= 0) dr.DecisionPeriod = 5;
+            dr.TakeActionsBetweenDecisions = true;
+        }
+    }
+
+    protected override void OnDisable()
+    {
+        if (trackCheckpoints != null)
+        {
+            trackCheckpoints.OnCarCorrectCheckpoint -= TrackCheckpoints_OnCarCorrectCheckpoint;
+            trackCheckpoints.OnCarWrongCheckpoint -= TrackCheckpoints_OnWrongCorrectCheckpoint;
+            trackCheckpoints.UnregisterCar(transform);
+        }
+
+        base.OnDisable(); // KLUCZOWE: czyści rejestracje w Academy
+    }
+
+
+
+
+    private static int s_AgentLayer = -1;
+    private static bool s_IgnoredSelfCollision = false;
+
+    private void EnsureAgentLayerAndIgnoreSelf()
+    {
+        if (s_AgentLayer == -1)
+            s_AgentLayer = LayerMask.NameToLayer("Agent");
+
+        if (s_AgentLayer == -1)
+        {
+            Debug.LogError("Brak warstwy 'Agent'. Dodaj ją w Project Settings > Tags and Layers.");
+            return;
+        }
+
+        // Ustaw warstwę na całym obiekcie (root + dzieci)
+        SetLayerRecursively(gameObject, s_AgentLayer);
+
+        // Raz na proces wyłącz kolizje tej warstwy z samą sobą
+        if (!s_IgnoredSelfCollision)
+        {
+            Physics.IgnoreLayerCollision(s_AgentLayer, s_AgentLayer, true);
+            s_IgnoredSelfCollision = true;
+        }
+    }
+
+    private static void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        for (int i = 0; i < obj.transform.childCount; i++)
+        {
+            SetLayerRecursively(obj.transform.GetChild(i).gameObject, layer);
+        }
+    }
 
 }

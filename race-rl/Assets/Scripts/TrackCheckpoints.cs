@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class TrackCheckpoints : MonoBehaviour
 {
-    [SerializeField] private List<Transform> carTransformList;  // TODO:
+    // [SerializeField] private List<Transform> carTransformList;  // TODO:
     //  problem że trzeba ręcznie dodawać model z bolidu - bo to ona ma box collider a nie sam empty więc trochę chujnia 
-    private List<CheckpointSingle> checkpointSingleList;
-    private List<int> nextCheckpointIndexList;
 
 
+    private List<Transform> carTransformList = new List<Transform>();
+    private List<int> nextCheckpointIndexList = new List<int>();
+    private List<CheckpointSingle> checkpointSingleList = new List<CheckpointSingle>();
+    
+    private readonly Dictionary<Transform, int> carIndexLookup = new Dictionary<Transform, int>();
 
     public event EventHandler<CarCheckpointEventArgs> OnCarCorrectCheckpoint;
     public event EventHandler<CarCheckpointEventArgs> OnCarWrongCheckpoint;
+
+    
 
     public class CarCheckpointEventArgs : EventArgs
     {
@@ -24,27 +29,61 @@ public class TrackCheckpoints : MonoBehaviour
     {
         Transform checkpointsTransform = transform.Find("Checkpoints");
 
-        checkpointSingleList = new List<CheckpointSingle>();
-
         foreach (Transform checkpointSingleTransform in checkpointsTransform)
         {
             CheckpointSingle checkpointSingle = checkpointSingleTransform.GetComponent<CheckpointSingle>();
-
             checkpointSingle.SetTrackCheckpoints(this);
-
             checkpointSingleList.Add(checkpointSingle);
         }
 
-        nextCheckpointIndexList = new List<int>();
-        foreach (Transform carTransform in carTransformList)
+
+        // foreach (Transform carTransform in carTransformList)
+        // {
+        //     nextCheckpointIndexList.Add(0);
+        // }
+    }
+
+    public void RegisterCar(Transform carTransform)
+    {
+        if (carTransform == null) return;
+        if (carIndexLookup.ContainsKey(carTransform)) return;
+
+        carTransformList.Add(carTransform);
+        int idx = carTransformList.Count - 1;
+        carIndexLookup[carTransform] = idx;
+        nextCheckpointIndexList.Add(0);
+    }
+
+    public void UnregisterCar(Transform carTransform)
+    {
+        if (carTransform == null) return;
+        if (!carIndexLookup.TryGetValue(carTransform, out int index)) return;
+
+        carTransformList.RemoveAt(index);
+        nextCheckpointIndexList.RemoveAt(index);
+        carIndexLookup.Remove(carTransform);
+
+        // Przemapuj indeksy po wycięciu
+        for (int i = index; i < carTransformList.Count; i++)
         {
-            nextCheckpointIndexList.Add(0);
+            carIndexLookup[carTransformList[i]] = i;
         }
     }
 
 
+
+
+
     public void AgentThroughCheckpoint(CheckpointSingle checkpointSingle, Transform carTransform)
     {
+        if (!carIndexLookup.TryGetValue(carTransform, out int idx))
+        {
+            // Opcjonalnie: auto-rejestracja jeśli zapomniano
+            RegisterCar(carTransform);
+            if (!carIndexLookup.TryGetValue(carTransform, out idx)) return;
+        }
+
+
         int nextCheckpointIndex = nextCheckpointIndexList[carTransformList.IndexOf(carTransform)];
         if (checkpointSingleList.IndexOf(checkpointSingle) == nextCheckpointIndex)
         {
