@@ -31,17 +31,11 @@ public class RacistAgent : Agent
 
 
 
-    private void Awake()
+    protected override void Awake()
     {
         carDriver = GetComponent<SimpleCar>();
     }
 
-
-    // private void Start()
-    // {
-    //     trackCheckpoints.OnCarCorrectCheckpoint += TrackCheckpoints_OnCarCorrectCheckpoint;
-    //     trackCheckpoints.OnCarWrongCheckpoint += TrackCheckpoints_OnWrongCorrectCheckpoint;
-    // }
 
     private void TrackCheckpoints_OnCarCorrectCheckpoint(object sender, TrackCheckpoints.CarCheckpointEventArgs e)
     {
@@ -154,13 +148,16 @@ public class RacistAgent : Agent
     }
 
 
+    /// <summary>
+    /// Zamiast metody Start
+    /// </summary>
     protected override void OnEnable()
     {
         base.OnEnable(); // KLUCZOWE: inicjalizuje ML-Agents (sensors, policy itd.)
 
-            // Ustaw warstwę "Agent" na całym prefabie i wyłącz kolizje Agent↔Agent
+        // Ustaw warstwę "Agent" na całym prefabie i wyłącz kolizje Agent↔Agent
         EnsureAgentLayerAndIgnoreSelf();
-        
+
 
 
         if (trackCheckpoints == null)
@@ -195,7 +192,7 @@ public class RacistAgent : Agent
     }
 
 
-
+    // TODO REFACTOR
 
     private static int s_AgentLayer = -1;
     private static bool s_IgnoredSelfCollision = false;

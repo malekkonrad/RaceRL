@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class MultiAgentSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject agentPrefab;              // Prefab z komponentem RacistAgent + SimpleCar
-    [SerializeField] private TrackCheckpoints trackCheckpoints;   // Ten sam dla wszystkich agentów (ok)
-    [SerializeField] private Transform[] spawnPoints;             // Różne spawny dla agentów
-    [SerializeField] private int agentsToSpawn = 8;               // Ilu agentów postawić (<= liczba spawnów)
+    [SerializeField] private GameObject agentPrefab;              
+    [SerializeField] private TrackCheckpoints trackCheckpoints;
+    [SerializeField] private Transform[] spawnPoints;             // to potencjalne do pozycji startowych w wyścigach - na razie nie ma większeog znaczenia ale nie zapomnieć
+    [SerializeField] private int agentsToSpawn = 8;               // liczba spanów
 
     private void Start()
     {

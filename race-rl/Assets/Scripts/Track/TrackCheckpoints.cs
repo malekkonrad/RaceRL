@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class TrackCheckpoints : MonoBehaviour
 {
-    // [SerializeField] private List<Transform> carTransformList;  // TODO:
-    //  problem że trzeba ręcznie dodawać model z bolidu - bo to ona ma box collider a nie sam empty więc trochę chujnia 
-
-
     private List<Transform> carTransformList = new List<Transform>();
     private List<int> nextCheckpointIndexList = new List<int>();
     private List<CheckpointSingle> checkpointSingleList = new List<CheckpointSingle>();
@@ -35,12 +31,6 @@ public class TrackCheckpoints : MonoBehaviour
             checkpointSingle.SetTrackCheckpoints(this);
             checkpointSingleList.Add(checkpointSingle);
         }
-
-
-        // foreach (Transform carTransform in carTransformList)
-        // {
-        //     nextCheckpointIndexList.Add(0);
-        // }
     }
 
     public void RegisterCar(Transform carTransform)
@@ -87,13 +77,13 @@ public class TrackCheckpoints : MonoBehaviour
         int nextCheckpointIndex = nextCheckpointIndexList[carTransformList.IndexOf(carTransform)];
         if (checkpointSingleList.IndexOf(checkpointSingle) == nextCheckpointIndex)
         {
-            Debug.Log("Correct");
+            // Debug.Log("Correct checkpoint");
             nextCheckpointIndexList[carTransformList.IndexOf(carTransform)] = (nextCheckpointIndex + 1) % checkpointSingleList.Count;
             OnCarCorrectCheckpoint?.Invoke(this, new CarCheckpointEventArgs { carTransform = carTransform });
         }
         else
         {
-            Debug.Log("Wrong:");
+            // Debug.Log("Wrong checkpoint");
             OnCarWrongCheckpoint?.Invoke(this, new CarCheckpointEventArgs { carTransform = carTransform });
         }
     }

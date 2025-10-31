@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Zostawiem bo przyda się potem myślę
+/// </summary>
+
 public class TrackDetector : MonoBehaviour
 {
 

@@ -6,6 +6,7 @@ public class CheckpointSingle : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // mozna tak a mozna tak
         // if (other.CompareTag("Player"))
         // {
         //     trackCheckpoints.AgentThroughCheckpoint(this, other.transform);
