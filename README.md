@@ -79,10 +79,10 @@ Stworzenie inteligentnego systemu wyścigowego z wykorzystaniem reinforcement le
 - [X] Testowanie i debugowanie agentów
 
 ### Tydzień 5 (10-14.11): Pierwszy trening - podstawowa jazda
-- [ ] Uruchomienie pierwszego treningu (algorytm PPO)
-- [ ] Monitoring TensorBoard
-- [ ] Iteracyjne dostrajanie nagród i obserwacji
-- [ ] Agent przechodzący prosty tor bez wypadania
+- [X] Uruchomienie pierwszego treningu (algorytm PPO)
+- [X] Monitoring TensorBoard
+- [X] Iteracyjne dostrajanie nagród i obserwacji
+- [X] Agent przechodzący prosty tor bez wypadania
 
 ### Tydzień 6 (17-21.11): Rozbudowa środowiska treningowego
 - [ ] Projektowanie bardziej skomplikowanego toru (więcej zakrętów, wzniesienia)
