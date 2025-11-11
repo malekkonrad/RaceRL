@@ -26,7 +26,28 @@ public class RacistAgent : Agent
         spawnPosition = spawn;
 
         // auto register
-        trackCheckpoints?.RegisterCar(transform);
+        // trackCheckpoints?.RegisterCar(transform);
+
+        // auto register
+        // trackCheckpoints?.RegisterCar(transform);
+        // If already registered to another TrackCheckpoints, unregister first
+        if (trackCheckpoints != null)
+        {
+            trackCheckpoints.OnCarCorrectCheckpoint -= TrackCheckpoints_OnCarCorrectCheckpoint;
+            trackCheckpoints.OnCarWrongCheckpoint -= TrackCheckpoints_OnWrongCorrectCheckpoint;
+            trackCheckpoints.UnregisterCar(transform);
+        }
+
+        trackCheckpoints = checkpoints;
+        spawnPosition = spawn;
+
+        // Register and subscribe to events on the new TrackCheckpoints (if any)
+        if (trackCheckpoints != null)
+        {
+            trackCheckpoints.RegisterCar(transform);
+            trackCheckpoints.OnCarCorrectCheckpoint += TrackCheckpoints_OnCarCorrectCheckpoint;
+            trackCheckpoints.OnCarWrongCheckpoint += TrackCheckpoints_OnWrongCorrectCheckpoint;
+        }
     }
 
 
@@ -41,6 +62,7 @@ public class RacistAgent : Agent
     {
         if (e.carTransform == transform)
         {
+            // Debug.Log("reward added check");
             AddReward(1f);
         }
     }
@@ -62,6 +84,21 @@ public class RacistAgent : Agent
         carDriver.StopCompletely();
 
         flippedTimer = 0f;
+
+        // spawnPosition może być nieustawione (np. gdy agent został włączony przed Init),
+        // więc użyj fallbacku i zabezpiecz ResetCheckpoint
+        if (spawnPosition == null)
+        {
+            Debug.LogWarning($"{name}: spawnPosition not set in OnEpisodeBegin — using current transform as fallback.");
+            spawnPosition = transform;
+        }
+        transform.position = spawnPosition.position + new Vector3(0, 0, Random.Range(-5f, +5f));
+        transform.forward = spawnPosition.forward;
+        trackCheckpoints?.ResetCheckpoint(transform);
+        carDriver?.StopCompletely();
+
+        flippedTimer = 0f;
+
     }
 
 
