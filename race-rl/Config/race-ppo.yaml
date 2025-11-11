@@ -101,13 +101,13 @@ environment_parameters:
           measure: reward
           behavior: Racist
           signal_smoothing: 50
-          min_lesson_length: 1
-          threshold: 0.1
+          min_lesson_length: 100
+          threshold: 20
       - name: hard
         value: 1
         completion_criteria:
           measure: reward
           behavior: Racist
           signal_smoothing: 50
-          min_lesson_length: 10
-          threshold: 2
+          min_lesson_length: 100
+          threshold: 40

@@ -45,7 +45,6 @@ public class LevelManager : MonoBehaviour
 
     private void OnEnvironmentReset()
     {
-        Debug.Log("RESET motherfucker");
         int idx = (int)Academy.Instance.EnvironmentParameters.GetWithDefault("track_index", (float)startIndex);
         idx = Mathf.Clamp(idx, 0, Mathf.Max(0, tracks.Length - 1));
         if (idx != currentIndex) ActivateTrack(idx);
