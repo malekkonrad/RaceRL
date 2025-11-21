@@ -43,3 +43,8 @@ A Comparative Study on Unity’s ML-Agents Framework](./simulated_autonomous_dri
 ### do tworzenia torów wyścigowych:
 - [RoadArchitect](https://github.com/FritzsHero/RoadArchitect)
 - [tutorial RoadArchitect](https://www.youtube.com/watch?v=sS-qAdlID68)
+
+
+### Komenda uruchamiająca (w katalogu racel-rl)
+
+mlagents-learn Config/race-ppo.yaml --run-id=trackC12
