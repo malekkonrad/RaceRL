@@ -135,7 +135,7 @@ public class RacistAgent : Agent
     {
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
-            AddReward(-0.5f);
+            AddReward(-1f);
             // na razie kończymy epizod jak zderzy się z ścianą
             EndEpisode();
         }
