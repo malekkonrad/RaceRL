@@ -62,7 +62,7 @@ public class RacistAgent : Agent
     {
         if (e.carTransform == transform)
         {
-            // Debug.Log("reward added check");
+            Debug.Log("reward added check");
             AddReward(1f);
         }
     }
@@ -78,12 +78,12 @@ public class RacistAgent : Agent
 
     public override void OnEpisodeBegin()
     {
-        transform.position = spawnPosition.position + new Vector3(0, 0, Random.Range(-5f, +5f));
-        transform.forward = spawnPosition.forward;
-        trackCheckpoints.ResetCheckpoint(transform);
-        carDriver.StopCompletely();
+        // transform.position = spawnPosition.position + new Vector3(0, 0, Random.Range(-5f, +5f));
+        // transform.forward = spawnPosition.forward;
+        // trackCheckpoints.ResetCheckpoint(transform);
+        // carDriver.StopCompletely();
 
-        flippedTimer = 0f;
+        // flippedTimer = 0f;
 
         // spawnPosition może być nieustawione (np. gdy agent został włączony przed Init),
         // więc użyj fallbacku i zabezpiecz ResetCheckpoint
@@ -92,7 +92,7 @@ public class RacistAgent : Agent
             Debug.LogWarning($"{name}: spawnPosition not set in OnEpisodeBegin — using current transform as fallback.");
             spawnPosition = transform;
         }
-        transform.position = spawnPosition.position + new Vector3(0, 0, Random.Range(-5f, +5f));
+        transform.position = spawnPosition.position; //+ new Vector3(0, 0, Random.Range(-5f, +5f))
         transform.forward = spawnPosition.forward;
         trackCheckpoints?.ResetCheckpoint(transform);
         carDriver?.StopCompletely();

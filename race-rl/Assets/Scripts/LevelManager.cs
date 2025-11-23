@@ -136,6 +136,11 @@ public class LevelManager : MonoBehaviour
             else if (currentParam - lastTrackIndexParam == 1 && lastTrackIndexParam != -1)
             {
                 Debug.Log($"Detected!!!!!!!!! track_index change: {lastTrackIndexParam} -> {currentParam}");
+                lastTrackIndexParam = currentParam;
+
+                // ręcznie resetuj środowisko
+                // Academy.Instance.EnvironmentStep(); // opcjonalnie
+                OnEnvironmentReset(); // ręcznie wywołaj swoją logikę
             }
             // else
             // {

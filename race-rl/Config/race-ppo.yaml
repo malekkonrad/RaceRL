@@ -17,7 +17,7 @@ behaviors:
       extrinsic:
         gamma: 0.99
         strength: 1.0
-    max_steps: 5.1e7
+    max_steps: 2.1e7
     time_horizon: 64
     summary_freq: 5000
 
@@ -31,7 +31,7 @@ environment_parameters:
           behavior: Racist
           signal_smoothing: 150
           min_lesson_length: 150
-          threshold: 3
+          threshold: 6
       - name: level1_easy_loop_left
         value: 1
         completion_criteria:
@@ -41,12 +41,12 @@ environment_parameters:
           min_lesson_length: 200
           threshold: 9  
       - name: level2_easy_loop_right
-        value: 2
+        value: 3
         completion_criteria:
           measure: reward
           behavior: Racist
           signal_smoothing: 200
-          min_lesson_length: 200
+          min_lesson_length: 0
           threshold: 10
       - name: level3_mixed_medium
         value: 3
@@ -55,4 +55,4 @@ environment_parameters:
           behavior: Racist
           signal_smoothing: 250
           min_lesson_length: 250
-          threshold: 84
+          threshold: 40
