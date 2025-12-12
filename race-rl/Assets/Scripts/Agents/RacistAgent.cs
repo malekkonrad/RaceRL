@@ -22,6 +22,7 @@ public class RacistAgent : Agent
     [SerializeField] public int lapsPerEpisode = 10;
     private int currentLap;
 
+    [SerializeField] private bool ignoreAgentCollisions = true;
 
     public void Init(TrackCheckpoints checkpoints, Transform spawn)
     {
@@ -272,8 +273,8 @@ public class RacistAgent : Agent
         // Raz na proces wyłącz kolizje tej warstwy z samą sobą
         if (!s_IgnoredSelfCollision)
         {
-            Physics.IgnoreLayerCollision(s_AgentLayer, s_AgentLayer, true);
-            s_IgnoredSelfCollision = true;
+            Physics.IgnoreLayerCollision(s_AgentLayer, s_AgentLayer, ignoreAgentCollisions);
+            s_IgnoredSelfCollision = ignoreAgentCollisions;
         }
     }
 
