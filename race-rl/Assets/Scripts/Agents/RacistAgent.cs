@@ -24,6 +24,17 @@ public class RacistAgent : Agent
 
     [SerializeField] private bool ignoreAgentCollisions = true;
 
+
+    // Rewards Section:
+    private const float WallCollisionPenalty = -1.0f;
+    private const float AgentCollisionEnterPenalty = -.5f;
+    private const float AgentCollisionStayPenalty = -.02f;
+    
+
+    [SerializeField] private float spawnGracePeriod = 0.2f;
+    private float lastSpawnTime = -10f;
+
+
     public void Init(TrackCheckpoints checkpoints, Transform spawn)
     {
         trackCheckpoints = checkpoints;
@@ -106,6 +117,7 @@ public class RacistAgent : Agent
         }
         transform.position = spawnPosition.position; 
         transform.forward = spawnPosition.forward;
+
         trackCheckpoints?.ResetCheckpoint(transform);
         carDriver?.StopCompletely();
         
@@ -153,12 +165,27 @@ public class RacistAgent : Agent
 
     private void OnCollisionEnter(Collision collision)
     {
+        // ignoruj "spawn collisions" przez krótki okres po teleporcie
+        if (Time.time - lastSpawnTime < spawnGracePeriod)
+        {
+            return;
+        }
+
+        Debug.Log($"Collision Enter: {collision.gameObject.name}, relVel={collision.relativeVelocity.magnitude}, impulse={collision.impulse.magnitude}");
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
             AddReward(-1f);
-            // na razie kończymy epizod jak zderzy się z ścianą
             EndEpisode();
+            return;
         }
+
+        if (collision.gameObject.TryGetComponent<RacistAgent>(out RacistAgent otherAgent))
+        {
+            Debug.Log("Kara za zderzenie!");
+            AddReward(AgentCollisionEnterPenalty);
+            otherAgent.AddReward(AgentCollisionEnterPenalty * 0.5f);
+        }
+
     }
 
     private void OnCollisionStay(Collision collision)
@@ -167,6 +194,12 @@ public class RacistAgent : Agent
         {
             AddReward(-0.1f);
             EndEpisode();
+            return;
+        }
+        if (collision.gameObject.TryGetComponent<RacistAgent>(out RacistAgent otherAgent))
+        {
+            Debug.Log("Kara utrzymanie zderzenia");
+            AddReward(AgentCollisionStayPenalty);
         }
     }
 
@@ -215,6 +248,7 @@ public class RacistAgent : Agent
         // Ustaw warstwę "Agent" na całym prefabie i wyłącz kolizje Agent↔Agent
         EnsureAgentLayerAndIgnoreSelf();
 
+        lastSpawnTime = Time.time;
 
 
         if (trackCheckpoints == null)
