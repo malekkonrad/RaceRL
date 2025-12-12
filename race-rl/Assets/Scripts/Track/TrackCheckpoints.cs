@@ -13,6 +13,8 @@ public class TrackCheckpoints : MonoBehaviour
     public event EventHandler<CarCheckpointEventArgs> OnCarCorrectCheckpoint;
     public event EventHandler<CarCheckpointEventArgs> OnCarWrongCheckpoint;
 
+    public event EventHandler<CarCheckpointEventArgs> OnCarLapCompleted;
+
     
 
     public class CarCheckpointEventArgs : EventArgs
@@ -75,11 +77,23 @@ public class TrackCheckpoints : MonoBehaviour
 
 
         int nextCheckpointIndex = nextCheckpointIndexList[carTransformList.IndexOf(carTransform)];
+        int checkpointIndex = checkpointSingleList.IndexOf(checkpointSingle);
+
+
         if (checkpointSingleList.IndexOf(checkpointSingle) == nextCheckpointIndex)
         {
+            // czy kończymy okrążenie?
+            bool lapCompleted = (nextCheckpointIndex == checkpointSingleList.Count - 1);
+
+
             // Debug.Log("Correct checkpoint");
             nextCheckpointIndexList[carTransformList.IndexOf(carTransform)] = (nextCheckpointIndex + 1) % checkpointSingleList.Count;
             OnCarCorrectCheckpoint?.Invoke(this, new CarCheckpointEventArgs { carTransform = carTransform });
+
+            if (lapCompleted)
+            {
+                OnCarLapCompleted?.Invoke(this, new CarCheckpointEventArgs {carTransform = carTransform});
+            }
         }
         else
         {

@@ -19,6 +19,9 @@ public class RacistAgent : Agent
 
     private SimpleCar carDriver;
 
+    [SerializeField] public int lapsPerEpisode = 10;
+    private int currentLap;
+
 
     public void Init(TrackCheckpoints checkpoints, Transform spawn)
     {
@@ -35,6 +38,7 @@ public class RacistAgent : Agent
         {
             trackCheckpoints.OnCarCorrectCheckpoint -= TrackCheckpoints_OnCarCorrectCheckpoint;
             trackCheckpoints.OnCarWrongCheckpoint -= TrackCheckpoints_OnWrongCorrectCheckpoint;
+            trackCheckpoints.OnCarLapCompleted -= TrackCheckpoints_OnCarLapCompleted;
             trackCheckpoints.UnregisterCar(transform);
         }
 
@@ -47,6 +51,7 @@ public class RacistAgent : Agent
             trackCheckpoints.RegisterCar(transform);
             trackCheckpoints.OnCarCorrectCheckpoint += TrackCheckpoints_OnCarCorrectCheckpoint;
             trackCheckpoints.OnCarWrongCheckpoint += TrackCheckpoints_OnWrongCorrectCheckpoint;
+            trackCheckpoints.OnCarLapCompleted += TrackCheckpoints_OnCarLapCompleted;
         }
     }
 
@@ -62,7 +67,6 @@ public class RacistAgent : Agent
     {
         if (e.carTransform == transform)
         {
-            Debug.Log("reward added check");
             AddReward(1f);
         }
     }
@@ -75,29 +79,44 @@ public class RacistAgent : Agent
         }
     }
 
+    private void TrackCheckpoints_OnCarLapCompleted(object sender, TrackCheckpoints.CarCheckpointEventArgs e) {
+        if (e.carTransform == transform)
+        {
+            currentLap++;
+            Debug.Log("Lap "+ currentLap + "/" + lapsPerEpisode);
+            AddReward(5.0f);                // nagroda za całe okrążenie
+
+            if (currentLap >= lapsPerEpisode)
+            {
+                AddReward(2.0f);
+                EndEpisode();       // kończymy epizod
+            }
+        }
+        
+    }
+
 
     public override void OnEpisodeBegin()
     {
-        // transform.position = spawnPosition.position + new Vector3(0, 0, Random.Range(-5f, +5f));
-        // transform.forward = spawnPosition.forward;
-        // trackCheckpoints.ResetCheckpoint(transform);
-        // carDriver.StopCompletely();
-
-        // flippedTimer = 0f;
-
-        // spawnPosition może być nieustawione (np. gdy agent został włączony przed Init),
-        // więc użyj fallbacku i zabezpiecz ResetCheckpoint
         if (spawnPosition == null)
         {
             Debug.LogWarning($"{name}: spawnPosition not set in OnEpisodeBegin — using current transform as fallback.");
             spawnPosition = transform;
         }
-        transform.position = spawnPosition.position; //+ new Vector3(0, 0, Random.Range(-5f, +5f))
+        transform.position = spawnPosition.position; 
         transform.forward = spawnPosition.forward;
         trackCheckpoints?.ResetCheckpoint(transform);
         carDriver?.StopCompletely();
-
+        
+        // Zmienne
+        currentLap = 0;
         flippedTimer = 0f;
+
+
+        // curriculum na liczbę okrążeń (opcjonalne, patrz YAML poniżej)
+        var envParams = Academy.Instance.EnvironmentParameters;
+        int lapsFromEnv = (int)envParams.GetWithDefault("laps_per_episode", lapsPerEpisode);
+        lapsPerEpisode = Mathf.Max(1, lapsFromEnv);
 
     }
 
@@ -206,6 +225,7 @@ public class RacistAgent : Agent
         {
             trackCheckpoints.OnCarCorrectCheckpoint += TrackCheckpoints_OnCarCorrectCheckpoint;
             trackCheckpoints.OnCarWrongCheckpoint += TrackCheckpoints_OnWrongCorrectCheckpoint;
+            trackCheckpoints.OnCarLapCompleted += TrackCheckpoints_OnCarLapCompleted;
         }
 
         var dr = GetComponent<DecisionRequester>();
@@ -222,6 +242,7 @@ public class RacistAgent : Agent
         {
             trackCheckpoints.OnCarCorrectCheckpoint -= TrackCheckpoints_OnCarCorrectCheckpoint;
             trackCheckpoints.OnCarWrongCheckpoint -= TrackCheckpoints_OnWrongCorrectCheckpoint;
+            trackCheckpoints.OnCarLapCompleted -= TrackCheckpoints_OnCarLapCompleted;
             trackCheckpoints.UnregisterCar(transform);
         }
 

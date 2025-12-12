@@ -47,12 +47,12 @@ environment_parameters:
           behavior: Racist
           signal_smoothing: 200
           min_lesson_length: 50
-          threshold: 10
+          threshold: 12
       - name: level3_mixed_medium
         value: 3
         completion_criteria:
           measure: reward
           behavior: Racist
           signal_smoothing: 250
-          min_lesson_length: 250
+          min_lesson_length: 50
           threshold: 40
