@@ -35,6 +35,12 @@ public class RacistAgent : Agent
     private float lastSpawnTime = -10f;
 
 
+
+
+    [SerializeField] private Rigidbody rb;              // NOWE
+    [SerializeField] private float speedRewardScale = 0.0005f;  // NOWE
+
+
     public void Init(TrackCheckpoints checkpoints, Transform spawn)
     {
         trackCheckpoints = checkpoints;
@@ -71,8 +77,12 @@ public class RacistAgent : Agent
 
     protected override void Awake()
     {
+        base.Awake();
         carDriver = GetComponent<SimpleCar>();
+        if (rb == null)
+            rb = GetComponent<Rigidbody>();
     }
+        
 
 
     private void TrackCheckpoints_OnCarCorrectCheckpoint(object sender, TrackCheckpoints.CarCheckpointEventArgs e)
@@ -136,6 +146,7 @@ public class RacistAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        // 1) Kierunek względem checkpointa
         var next = trackCheckpoints?.GetNexCheckpoint(transform);
         float directionDot = 0f;
         if (next != null)
@@ -144,6 +155,26 @@ public class RacistAgent : Agent
             directionDot = Vector3.Dot(transform.forward, checkpointForward);
         }
         sensor.AddObservation(directionDot);
+
+
+        // 2) predkość 
+        if (rb != null)
+        {
+            Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
+
+            // forward speed (z) i boczna (x), znormalizowane do [-1, 1]
+            float maxSpeed = 50f; // oszacuj maksymalną sensowną prędkość na swoim torze
+            sensor.AddObservation(Mathf.Clamp(localVel.z / maxSpeed, -1f, 1f)); // do przodu/tyłu
+            sensor.AddObservation(Mathf.Clamp(localVel.x / maxSpeed, -1f, 1f)); // ślizg bokiem
+        }
+        else
+        {
+            sensor.AddObservation(0f);
+            sensor.AddObservation(0f);
+        }
+
+
+
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -153,6 +184,18 @@ public class RacistAgent : Agent
         float turnAmount = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
 
         carDriver.SetInputs(forwardAmount, turnAmount);
+
+
+        // --- REWARD ZA PRĘDKOŚĆ DO PRZODU ---
+        if (rb != null)
+        {
+            // prędkość w lokalnym układzie auta
+            Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
+            float forwardSpeed = Mathf.Max(0f, localVel.z); // tylko do przodu
+
+            // mała nagroda proporcjonalna do prędkości
+            AddReward(forwardSpeed * speedRewardScale * Time.deltaTime);
+        }
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -181,7 +224,7 @@ public class RacistAgent : Agent
 
         if (collision.gameObject.TryGetComponent<RacistAgent>(out RacistAgent otherAgent))
         {
-            Debug.Log("Kara za zderzenie!");
+            // Debug.Log("Kara za zderzenie!");
             AddReward(AgentCollisionEnterPenalty);
             otherAgent.AddReward(AgentCollisionEnterPenalty * 0.5f);
         }
@@ -198,8 +241,9 @@ public class RacistAgent : Agent
         }
         if (collision.gameObject.TryGetComponent<RacistAgent>(out RacistAgent otherAgent))
         {
-            Debug.Log("Kara utrzymanie zderzenia");
+            // Debug.Log("Kara utrzymanie zderzenia");
             AddReward(AgentCollisionStayPenalty);
+            otherAgent.AddReward(AgentCollisionStayPenalty);
         }
     }
 
