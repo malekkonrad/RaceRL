@@ -89,7 +89,7 @@ public class RacistAgent : Agent
     {
         if (e.carTransform == transform)
         {
-            AddReward(1f);
+            AddReward(0.5f);
         }
     }
 
@@ -97,7 +97,7 @@ public class RacistAgent : Agent
     {
         if (e.carTransform == transform)
         {
-            AddReward(-1f);
+            AddReward(-0.5f);
         }
     }
 
@@ -137,9 +137,9 @@ public class RacistAgent : Agent
 
 
         // curriculum na liczbę okrążeń (opcjonalne, patrz YAML poniżej)
-        var envParams = Academy.Instance.EnvironmentParameters;
-        int lapsFromEnv = (int)envParams.GetWithDefault("laps_per_episode", lapsPerEpisode);
-        lapsPerEpisode = Mathf.Max(1, lapsFromEnv);
+        // var envParams = Academy.Instance.EnvironmentParameters;
+        // int lapsFromEnv = (int)envParams.GetWithDefault("laps_per_episode", lapsPerEpisode);
+        // lapsPerEpisode = Mathf.Max(1, lapsFromEnv);
 
     }
 
@@ -214,7 +214,7 @@ public class RacistAgent : Agent
             return;
         }
 
-        Debug.Log($"Collision Enter: {collision.gameObject.name}, relVel={collision.relativeVelocity.magnitude}, impulse={collision.impulse.magnitude}");
+        // Debug.Log($"Collision Enter: {collision.gameObject.name}, relVel={collision.relativeVelocity.magnitude}, impulse={collision.impulse.magnitude}");
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
             AddReward(-1f);
