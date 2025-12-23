@@ -14,7 +14,7 @@ public class RacistAgent : Agent
     // dodatkowe pola żeby zapobiegać przewracaniu się - w teorii teraz już nie powinno być z tym problemu ale myślę 
     // że jak się dołoży kilku agentów i zderzenia to może być różnie
     [SerializeField] private float flippedEndDelay = 0.75f;        // ile sekund warunek ma trwać 
-    [SerializeField, Range(-1f, 1f)] private float upsideDownDotThreshold = -0.2f; // < 0 znaczy "głową w dół"
+    // [SerializeField, Range(-1f, 1f)] private float upsideDownDotThreshold = -0.2f; // < 0 znaczy "głową w dół"
     private float flippedTimer = 0f;
 
     private SimpleCar carDriver;
@@ -125,11 +125,13 @@ public class RacistAgent : Agent
             Debug.LogWarning($"{name}: spawnPosition not set in OnEpisodeBegin — using current transform as fallback.");
             spawnPosition = transform;
         }
+        carDriver?.StopCompletely();
+
         transform.position = spawnPosition.position; 
         transform.forward = spawnPosition.forward;
 
         trackCheckpoints?.ResetCheckpoint(transform);
-        carDriver?.StopCompletely();
+        
         
         // Zmienne
         currentLap = 0;
@@ -262,15 +264,15 @@ public class RacistAgent : Agent
                 }
             }
 
-            float upDot = Vector3.Dot(transform.up, Vector3.up); // 1 = prosto, -1 = do góry nogami
-            bool upsideDown = upDot < upsideDownDotThreshold;
+            // float upDot = Vector3.Dot(transform.up, Vector3.up); // 1 = prosto, -1 = do góry nogami
+            // bool upsideDown = upDot < upsideDownDotThreshold;
 
-            if (counter == 4 && upsideDown)
+            if (counter == 4 )
             {
                 flippedTimer += Time.fixedDeltaTime;
                 if (flippedTimer >= flippedEndDelay)
                 {
-                    AddReward(-1f);
+                    AddReward(-300f);
                     EndEpisode();
                 }
             }
