@@ -5,23 +5,15 @@ public class MultiAgentSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject agentPrefab;              
     [SerializeField] private TrackCheckpoints trackCheckpoints;
-    [SerializeField] private Transform[] spawnPoints;             // to potencjalne do pozycji startowych w wyścigach - na razie nie ma większeog znaczenia ale nie zapomnieć
-    [SerializeField] private int agentsToSpawn = 3;               // liczba spanów
+    [SerializeField] private Transform[] spawnPoints;             
+    [SerializeField] private int agentsToSpawn = 3;               
 
+    // NOWE: Referencja do kamery
+    [Header("Camera Connection")]
+    [SerializeField] private CarCamera carCamera; 
 
     private List<GameObject> spawned = new List<GameObject>();
 
-    // private void Start()
-    // {
-    //     int count = Mathf.Min(agentsToSpawn, spawnPoints.Length);
-    //     for (int i = 0; i < count; i++)
-    //     {
-    //         var go = Instantiate(agentPrefab, spawnPoints[i].position, spawnPoints[i].rotation);
-    //         var agent = go.GetComponent<RacistAgent>();
-    //         agent.Init(trackCheckpoints, spawnPoints[i]);
-    //     }
-    // }
-    // Remove auto-spawn from Start: LevelManager powinien wywołać RespawnAll po ustawieniu toru.
     private void Start()
     {
         // Intentionally left blank
@@ -37,6 +29,12 @@ public class MultiAgentSpawner : MonoBehaviour
             var agent = go.GetComponent<RacistAgent>();
             agent?.Init(trackCheckpoints, spawnPoints[i]);
             spawned.Add(go);
+        }
+
+        // NOWE: Po stworzeniu agentów, przekaż ich do kamery
+        if (carCamera != null)
+        {
+            carCamera.SetTargets(spawned);
         }
     }
 
@@ -54,7 +52,6 @@ public class MultiAgentSpawner : MonoBehaviour
         SpawnAgents();
     }
 
-    // public API: LevelManager ustawia aktualny tor i punkty startowe
     public void SetTrack(TrackCheckpoints tc, Transform[] spawns)
     {
         trackCheckpoints = tc;

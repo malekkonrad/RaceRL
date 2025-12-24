@@ -30,29 +30,37 @@ environment_parameters:
           measure: reward
           behavior: Racist
           signal_smoothing: 150
-          min_lesson_length: 1
-          threshold: 3
+          min_lesson_length: 10
+          threshold: 5
       - name: level1_easy_loop_left
         value: 1
         completion_criteria:
           measure: reward
           behavior: Racist
           signal_smoothing: 200
-          min_lesson_length: 1
-          threshold: 5
+          min_lesson_length: 10
+          threshold: 9
       - name: level2_easy_loop_right
         value: 2
         completion_criteria:
           measure: reward
           behavior: Racist
           signal_smoothing: 200
-          min_lesson_length: 1
-          threshold: 6
+          min_lesson_length: 10
+          threshold: 12
       - name: level3_mixed_medium
         value: 3
         completion_criteria:
           measure: reward
           behavior: Racist
-          signal_smoothing: 250
-          min_lesson_length: 1
-          threshold: 50
+          signal_smoothing: 200
+          min_lesson_length: 10
+          threshold: 40
+      - name: level4_mixed_hard
+        value: 4
+        completion_criteria:
+          measure: reward
+          behavior: Racist
+          signal_smoothing: 200
+          min_lesson_length: 10
+          threshold: 60

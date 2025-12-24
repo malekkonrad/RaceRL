@@ -38,7 +38,7 @@ public class RacistAgent : Agent
 
 
     [SerializeField] private Rigidbody rb;              // NOWE
-    [SerializeField] private float speedRewardScale = 0.0005f;  // NOWE
+    [SerializeField] private float speedRewardScale = 0.001f;  // NOWE
 
 
     public void Init(TrackCheckpoints checkpoints, Transform spawn)
@@ -89,7 +89,7 @@ public class RacistAgent : Agent
     {
         if (e.carTransform == transform)
         {
-            AddReward(0.5f);
+            AddReward(0.8f);
         }
     }
 
@@ -97,7 +97,7 @@ public class RacistAgent : Agent
     {
         if (e.carTransform == transform)
         {
-            AddReward(-0.5f);
+            AddReward(-0.3f);
         }
     }
 
@@ -195,8 +195,11 @@ public class RacistAgent : Agent
             Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
             float forwardSpeed = Mathf.Max(0f, localVel.z); // tylko do przodu
 
+
+            float reward = Mathf.Clamp(forwardSpeed * speedRewardScale, 0f, 1f); // Max 1 pkt na sekundę za prędkość
+            AddReward(reward * Time.deltaTime);
             // mała nagroda proporcjonalna do prędkości
-            AddReward(forwardSpeed * speedRewardScale * Time.deltaTime);
+            // AddReward(forwardSpeed * speedRewardScale * Time.deltaTime);
         }
     }
 
@@ -219,7 +222,8 @@ public class RacistAgent : Agent
         // Debug.Log($"Collision Enter: {collision.gameObject.name}, relVel={collision.relativeVelocity.magnitude}, impulse={collision.impulse.magnitude}");
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
-            AddReward(-1f);
+            Debug.Log("Ściana");
+            AddReward(-.5f);
             EndEpisode();
             return;
         }
@@ -237,7 +241,7 @@ public class RacistAgent : Agent
     {
         if (collision.gameObject.TryGetComponent<Wall>(out Wall wall))
         {
-            AddReward(-0.1f);
+            AddReward(-0.2f);
             EndEpisode();
             return;
         }
@@ -254,6 +258,20 @@ public class RacistAgent : Agent
     {
         if (carDriver != null)
         {
+            // Wewnątrz metody OnActionReceived lub FixedUpdate w RacistAgent
+            float speed = rb.linearVelocity.magnitude;
+
+            // Jeśli auto leci szybciej niż np. 100 m/s (360 km/h) lub spadło pod mapę
+            if (speed > 500f || transform.position.y < -10f)    //speed > 500f || 
+            {
+                Debug.Log($"przekorczenie predkosci {speed} x { transform.position.x} y {transform.position.y} z {transform.position.z}");
+                // Opcjonalnie: mała kara, żeby nie dążył do tego
+                SetReward(-1f); 
+                EndEpisode();
+                return;
+            }
+
+
             SimpleWheel[] wheels = { carDriver.frontLeft, carDriver.frontRight, carDriver.rearLeft, carDriver.rearRight };
             int counter = 0;
             foreach (var wheel in wheels)
@@ -272,7 +290,7 @@ public class RacistAgent : Agent
                 flippedTimer += Time.fixedDeltaTime;
                 if (flippedTimer >= flippedEndDelay)
                 {
-                    AddReward(-300f);
+                    // AddReward(-1f);
                     EndEpisode();
                 }
             }
