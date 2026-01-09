@@ -39,6 +39,10 @@ public class RacistAgent : Agent
 
     [SerializeField] private Rigidbody rb;              // NOWE
     [SerializeField] private float speedRewardScale = 0.001f;  // NOWE
+    [SerializeField] private float positionRewardScale = 0.002f;
+
+
+    private int currentRank = 0;
 
 
     public void Init(TrackCheckpoints checkpoints, Transform spawn)
@@ -89,7 +93,7 @@ public class RacistAgent : Agent
     {
         if (e.carTransform == transform)
         {
-            AddReward(0.8f);
+            AddReward(0.5f);
         }
     }
 
@@ -111,7 +115,9 @@ public class RacistAgent : Agent
             if (currentLap >= lapsPerEpisode)
             {
                 AddReward(2.0f);
-                EndEpisode();       // kończymy epizod
+                
+                // EndEpisode();       // kończymy epizod
+                LevelManager.Instance.FinishRaceForEveryone();
             }
         }
         
@@ -137,6 +143,8 @@ public class RacistAgent : Agent
         currentLap = 0;
         flippedTimer = 0f;
 
+
+        currentRank = 100;
 
         // curriculum na liczbę okrążeń (opcjonalne, patrz YAML poniżej)
         // var envParams = Academy.Instance.EnvironmentParameters;
@@ -186,6 +194,49 @@ public class RacistAgent : Agent
         float turnAmount = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
 
         carDriver.SetInputs(forwardAmount, turnAmount);
+
+
+        // --- NAGRODY ZA WYPRZEDZANIE ---
+        if (trackCheckpoints != null)
+        {
+            // 1. Pobierz aktualną pozycję (1 = lider)
+            int newRank = trackCheckpoints.GetCarRank(transform);
+
+            // Inicjalizacja przy pierwszym kroku
+            if (currentRank > 90) currentRank = newRank;
+
+            // --- CZĘŚĆ 1: IMPULS (Twój kod - nagroda za zmianę) ---
+            // Działa jak "strzał dopaminy" w momencie sukcesu
+            if (newRank < currentRank && currentRank - newRank < 20)
+            {
+                // Awansowaliśmy (np. z 3 na 2 miejsce)
+                AddReward(2.0f); 
+                // Debug.Log("Overtake! New Rank: " + newRank);
+            }
+            else if (newRank > currentRank)
+            {
+                // Spadliśmy (ktoś nas wyprzedził)
+                AddReward(-0.5f); 
+            }
+
+            // Aktualizujemy zapamiętaną pozycję
+            currentRank = newRank;
+
+
+            // --- CZĘŚĆ 2: CIĄGŁA PRESJA (To o co pytałeś) ---
+            // Działa w każdej klatce. Motywuje do UTRZYMANIA pozycji po wyprzedzeniu.
+            if (newRank > 0)
+            {
+                // Wzór: 1 / Pozycja
+                // Lider dostaje 1.0 * skala
+                // Drugi dostaje 0.5 * skala
+                // Trzeci dostaje 0.33 * skala
+                float rankBonus = 1.0f / (float)newRank;
+                
+                AddReward(rankBonus * positionRewardScale);
+            }
+        }
+
 
 
         // --- REWARD ZA PRĘDKOŚĆ DO PRZODU ---

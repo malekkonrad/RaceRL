@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq; 
 
 public class TrackCheckpoints : MonoBehaviour
 {
@@ -16,6 +17,15 @@ public class TrackCheckpoints : MonoBehaviour
     public event EventHandler<CarCheckpointEventArgs> OnCarLapCompleted;
 
     
+    private class CarProgress
+    {
+        public Transform transform;
+        public int laps;
+        public int currentCheckpointIndex;
+        public float distanceToNext;
+    }
+
+
 
     public class CarCheckpointEventArgs : EventArgs
     {
@@ -117,6 +127,66 @@ public class TrackCheckpoints : MonoBehaviour
         {
             nextCheckpointIndexList[carIndex] = 0;
         }
+    }
+
+
+    public int GetCarRank(Transform carTransform)
+    {
+        // 1. Zbieramy dane o wszystkich autach
+        List<CarProgress> progressList = new List<CarProgress>();
+
+        for (int i = 0; i < carTransformList.Count; i++)
+        {
+            Transform car = carTransformList[i];
+            int nextCPIndex = nextCheckpointIndexList[i];
+            
+            // Obliczamy dystans do następnego checkpointa (im mniej tym lepiej)
+            CheckpointSingle nextCP = checkpointSingleList[nextCPIndex];
+            float dist = Vector3.Distance(car.position, nextCP.transform.position);
+
+            // Obecny (zaliczony) checkpoint to next - 1
+            // Ale musimy obsłużyć przypadek gdy next = 0 (start)
+            int currentCP = nextCPIndex - 1;
+            if (currentCP < 0) currentCP = checkpointSingleList.Count - 1;
+
+            // Tutaj musiałbyś jakoś przechowywać liczbę okrążeń w TrackCheckpoints 
+            // lub pobierać ją od agenta. Dla uproszczenia przyjmijmy, 
+            // że sortujemy głownie po checkpoincie, a w przypadku równości po dystansie.
+            // W idealnym świecie RacistAgent powinien raportować swoje okrążenie do TrackCheckpoints.
+            
+            // UWAGA: Aby to działało idealnie, przenieś licznik 'currentLap' z Agenta tutaj 
+            // lub zrób publiczną metodę w Agencie GetLaps(). 
+            // Poniżej wersja uproszczona (zakłada to samo okrążenie, co przy starcie równoległym wystarczy):
+
+            progressList.Add(new CarProgress {
+                transform = car,
+                laps = 0, // Tu wstaw realne okrążenia jeśli agenty się dublują
+                currentCheckpointIndex = currentCP, // lub nextCPIndex jako "cel"
+                distanceToNext = dist
+            });
+        }
+
+        // 2. Sortujemy: Najpierw kto ma wyższy checkpoint, potem kto jest bliżej następnego
+        // Używamy nextCheckpointIndexList jako wskaźnika postępu
+        
+        var sortedCars = carTransformList
+            .Select((t, index) => new { 
+                Transform = t, 
+                Index = nextCheckpointIndexList[index], 
+                Dist = Vector3.Distance(t.position, checkpointSingleList[nextCheckpointIndexList[index]].transform.position) 
+            })
+            .OrderByDescending(x => x.Index) // Kto ma dalszy checkpoint (zakładając brak dublowania)
+            .ThenBy(x => x.Dist) // Kto jest bliżej celu (mniejszy dystans)
+            .ToList();
+
+        // Znajdź pozycję (Rank 1 = index 0)
+        for (int i = 0; i < sortedCars.Count; i++)
+        {
+            if (sortedCars[i].Transform == carTransform)
+                return i + 1; // Pozycja 1, 2, 3...
+        }
+
+        return -1;
     }
 
 }

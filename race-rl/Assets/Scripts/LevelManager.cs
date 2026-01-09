@@ -148,4 +148,23 @@ public class LevelManager : MonoBehaviour
             // }
         }
     }
+
+    public void FinishRaceForEveryone()
+    {
+        // Znajdź wszystkich aktywnych agentów
+        var agents = FindObjectsByType<RacistAgent>(FindObjectsSortMode.None);
+        
+        foreach (var agent in agents)
+        {
+            // Ważne: Dajemy nagrodę pocieszenia lub karę dla tych, co nie dojechali?
+            // Zazwyczaj po prostu kończymy im epizod.
+            // Ewentualnie: agent.AddReward(-1.0f); // Kara za przegranie wyścigu
+            
+            agent.EndEpisode(); // To wyśle dane do trenera i zresetuje agenta
+        }
+        
+        // Opcjonalnie: Jeśli EndEpisode() sam nie resetuje pozycji (zależy od Twojego OnEpisodeBegin),
+        // to tutaj możesz wymusić RespawnAll na spawnerze.
+        // Ale w ML-Agents zazwyczaj OnEpisodeBegin() zajmuje się teleportem na start.
+    }
 }
