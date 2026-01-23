@@ -54,8 +54,8 @@ environment_parameters:
           measure: reward
           behavior: Racist
           signal_smoothing: 200
-          min_lesson_length: 40
-          threshold: 40
+          min_lesson_length: 100
+          threshold: 60
       - name: level4_mixed_hard
         value: 4
         completion_criteria:

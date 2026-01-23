@@ -225,15 +225,37 @@ public class RacistAgent : Agent
 
             // --- CZĘŚĆ 2: CIĄGŁA PRESJA (To o co pytałeś) ---
             // Działa w każdej klatce. Motywuje do UTRZYMANIA pozycji po wyprzedzeniu.
-            if (newRank > 0)
+            if (newRank > 0 && rb != null)
             {
                 // Wzór: 1 / Pozycja
                 // Lider dostaje 1.0 * skala
                 // Drugi dostaje 0.5 * skala
                 // Trzeci dostaje 0.33 * skala
-                float rankBonus = 1.0f / (float)newRank;
+                // float rankBonus = 1.0f / (float)newRank;
                 
-                AddReward(rankBonus * positionRewardScale);
+                // AddReward(rankBonus * positionRewardScale);
+                float forwardSpeed = Mathf.Max(0f, transform.InverseTransformDirection(rb.linearVelocity).z);
+            
+                // Minimalna prędkość żeby dostawać bonus (np. 5 m/s)
+                float minSpeed = 5f;
+                
+                if (forwardSpeed > minSpeed)
+                {
+                    float rankBonus = 1.0f / (float)newRank;
+                    
+                    // Skaluj bonus względem prędkości
+                    float speedFactor = Mathf.Clamp01((forwardSpeed - minSpeed) / 20f); // 0-1 między 5-25 m/s
+                    
+                    AddReward(rankBonus * positionRewardScale * speedFactor * Time.deltaTime);
+                }
+                else
+                {
+                    // KARA za stanie na wysokiej pozycji
+                    if (newRank <= 3) // Tylko dla top 3
+                    {
+                        AddReward(-0.01f * Time.deltaTime);
+                    }
+                }
             }
         }
 
@@ -247,8 +269,12 @@ public class RacistAgent : Agent
             float forwardSpeed = Mathf.Max(0f, localVel.z); // tylko do przodu
 
 
-            float reward = Mathf.Clamp(forwardSpeed * speedRewardScale, 0f, 1f); // Max 1 pkt na sekundę za prędkość
-            AddReward(reward * Time.deltaTime);
+            // float reward = Mathf.Clamp(forwardSpeed * speedRewardScale, 0f, 1f); // Max 1 pkt na sekundę za prędkość
+            //             AddReward(reward * Time.deltaTime);
+            
+            float speedReward = Mathf.Clamp(forwardSpeed * 0.01f, 0f, 0.5f); // Max 0.5/klatkę
+            AddReward(speedReward * Time.deltaTime);
+
             // mała nagroda proporcjonalna do prędkości
             // AddReward(forwardSpeed * speedRewardScale * Time.deltaTime);
         }
