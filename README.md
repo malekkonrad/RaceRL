@@ -85,54 +85,54 @@ Stworzenie inteligentnego systemu wyścigowego z wykorzystaniem reinforcement le
 - [X] Agent przechodzący prosty tor bez wypadania
 
 ### Tydzień 6 (17-21.11): Rozbudowa środowiska treningowego
-- [ ] Projektowanie bardziej skomplikowanego toru (więcej zakrętów, wzniesienia)
-- [ ] Implementacja randomizacji środowiska (różne kolory, tekstury)
-- [ ] Optymalizacja performance'u treningu
+- [X] Projektowanie bardziej skomplikowanego toru (więcej zakrętów, wzniesienia)
+- [X] Implementacja randomizacji środowiska (różne kolory, tekstury)
+- [X] Optymalizacja performance'u treningu
 
 ### Tydzień 7 (24-28.11): Optymalizacja funkcji nagrody
-- [ ] Zaawansowane nagrody: bonus za prędkość, kara za zbyt ostre manewry
-- [ ] Nagrody za optymalne linie przejazdu (apex points)
-- [ ] Testowanie różnych wag nagród
+- [X] Zaawansowane nagrody: bonus za prędkość, kara za zbyt ostre manewry
+- [X] Nagrody za optymalne linie przejazdu (apex points)
+- [X] Testowanie różnych wag nagród
 
 ### Tydzień 8 (1-5.12): Curriculum Learning
-- [ ] Implementacja poziomów trudności toru
-- [ ] Stopniowe wprowadzanie bardziej skomplikowanych sekcji
-- [ ] Automatyczna zmiana trudności w zależności od postępów
+- [X] Implementacja poziomów trudności toru
+- [X] Stopniowe wprowadzanie bardziej skomplikowanych sekcji
+- [X] Automatyczna zmiana trudności w zależności od postępów
 
 ### Tydzień 9 (8-12.12): Przygotowanie do wyścigów - Multi-Agent
-- [ ] Rozszerzenie sceny o możliwość wielu agentów jednocześnie
-- [ ] System detekcji innych pojazdów (raycasty, sensory)
-- [ ] Rozszerzona przestrzeń obserwacji (pozycje przeciwników)
-- [ ] Zarządzanie kolizjami między agentami
+- [X] Rozszerzenie sceny o możliwość wielu agentów jednocześnie
+- [X] System detekcji innych pojazdów (raycasty, sensory)
+- [X] Rozszerzona przestrzeń obserwacji (pozycje przeciwników)
+- [X] Zarządzanie kolizjami między agentami
 
 ### Tydzień 10 (15-19.12): Self-Play - trening kompetytywny
-- [ ] Konfiguracja ML-Agents Self-Play
-- [ ] Nagrody za wyprzedzanie przeciwników
-- [ ] Kary za zderzenia (ale nie za bliskość)
-- [ ] Nagrody za obronę pozycji
+- [X] Konfiguracja ML-Agents Self-Play
+- [X] Nagrody za wyprzedzanie przeciwników
+- [X] Kary za zderzenia (ale nie za bliskość)
+- [X] Nagrody za obronę pozycji
 
 ### Tydzień 11 (7-9.01): Zaawansowane strategie wyścigowe
-- [ ] Fine-tuning nagród dla strategii (blokowanie, zajmowanie idealnej linii)
-- [ ] Implementacja "świadomości wyścigu" (pozycja w stawce)
-- [ ] Różne style jazdy (agresywny vs defensywny)
-- [ ] Long-term planning rewards
+- [X] Fine-tuning nagród dla strategii (blokowanie, zajmowanie idealnej linii)
+- [X] Implementacja "świadomości wyścigu" (pozycja w stawce)
+- [X] Różne style jazdy (agresywny vs defensywny)
+- [X] Long-term planning rewards
 
 ### Tydzień 12 (12-16.01): System wyścigowy i UI
-- [ ] Implementacja systemu startu wyścigu (grid startowy, countdown)
-- [ ] System zliczania okrążeń
+- [X] Implementacja systemu startu wyścigu (grid startowy, countdown)
+- [X] System zliczania okrążeń
 - [ ] Klasyfikacja na żywo
 - [ ] UI: pozycje, czasy, najszybsze okrążenie
-- [ ] System kamer (śledząca lidera, swobodna, onboard)
+- [X] System kamer (śledząca lidera, swobodna, onboard)
 
 ### Tydzień 13 (19-23.01): Wizualizacja i analiza
-- [ ] Dashboard z metrykami treningu
-- [ ] Wizualizacja decyzji agenta (debug rays, heatmapy)
-- [ ] Statystyki: średnie czasy, Win Rate, liczba wyprzedzeń
+- [X] Dashboard z metrykami treningu
+- [X] Wizualizacja decyzji agenta (debug rays, heatmapy)
+- [X] Statystyki: średnie czasy, Win Rate, liczba wyprzedzeń
 
 ### Tydzień 14 (26-30.01): Prezentacja i dokumentacja
-- [ ] Finalna dokumentacja projektu (architektura, wyniki eksperymentów)
-- [ ] Analiza wyników (porównanie metod, wykres learning curves)
-- [ ] Wnioski i możliwe rozszerzenia
+- [X] Finalna dokumentacja projektu (architektura, wyniki eksperymentów)
+- [X] Analiza wyników (porównanie metod, wykres learning curves)
+- [X] Wnioski i możliwe rozszerzenia
 
 
 
